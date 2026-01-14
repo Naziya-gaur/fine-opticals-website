@@ -93,16 +93,24 @@ img {
 
 
 
-/* Hamburger icon color */
+/* 1. Shrink the button's hit area */
 .navbar-toggler {
   border: none;
+  padding: 3px !important; 
+  line-height: 1;
+  display: flex !important;
+  align-items: center;  
+  justify-content: center;
 }
 
 .navbar-toggler:focus {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .navbar-toggler-icon {
+  width: 30px !important;
+  height: 20px !important;
+  background-size: 100% 100% !important;
   filter: invert(30%) sepia(90%) saturate(500%) hue-rotate(180deg);
 }
 
