@@ -125,4 +125,92 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+const desktopLensGallery = document.getElementById('lensShowcase');
+const mobileLensGallery = document.getElementById('lensShowcaseMobile');
+
+if (desktopLensGallery && mobileLensGallery) {
+
+    const mobileInner =
+        mobileLensGallery.querySelector('.mobile-lens-inner');
+
+    const mobilePrev =
+        mobileLensGallery.querySelector('.mobile-lens-prev');
+
+    const mobileNext =
+        mobileLensGallery.querySelector('.mobile-lens-next');
+
+    const lensImages =
+        desktopLensGallery.querySelectorAll('.gallery-main img');
+
+    let currentMobileSlide = 0;
+
+    lensImages.forEach((img, index) => {
+
+        const slide = document.createElement('div');
+
+        slide.className = 'mobile-lens-slide';
+
+        if (index === 0) {
+            slide.classList.add('active');
+        }
+
+        const card = document.createElement('div');
+
+        card.className = 'gallery-main';
+
+        const newImg = document.createElement('img');
+
+        newImg.src = img.src;
+        newImg.alt = img.alt;
+
+        if (img.classList.contains('portrait-img')) {
+            newImg.classList.add('portrait-img');
+        }
+
+        card.appendChild(newImg);
+        slide.appendChild(card);
+        mobileInner.appendChild(slide);
+
+    });
+
+    const mobileSlides =
+        mobileInner.querySelectorAll('.mobile-lens-slide');
+
+    function showMobileSlide(index) {
+
+        if (!mobileSlides.length) return;
+
+        if (index < 0) {
+            index = mobileSlides.length - 1;
+        }
+
+        if (index >= mobileSlides.length) {
+            index = 0;
+        }
+
+        mobileSlides.forEach(slide => {
+            slide.classList.remove('active');
+        });
+
+        mobileSlides[index].classList.add('active');
+
+        currentMobileSlide = index;
+    }
+
+    mobilePrev.addEventListener('click', () => {
+        showMobileSlide(currentMobileSlide - 1);
+    });
+
+    mobileNext.addEventListener('click', () => {
+        showMobileSlide(currentMobileSlide + 1);
+    });
+
+    setInterval(() => {
+
+        if (window.innerWidth <= 767.98) {
+            showMobileSlide(currentMobileSlide + 1);
+        }
+
+    }, 4000);
+} 
 });

@@ -981,6 +981,70 @@ img {
   }
 }
 
+/* =========================================
+   MOBILE LENS GALLERY
+========================================= */
+
+@media (max-width: 767.98px) {
+
+    .gallery-alt-carousel {
+        padding: 0 50px;
+    }
+
+    /*
+       Each carousel slide contains 3 images.
+       On mobile, hide the 2nd and 3rd images.
+       They will be shown using JS one at a time.
+    */
+
+    .gallery-alt-carousel .carousel-item .row {
+        display: block;
+    }
+
+    .gallery-alt-carousel .carousel-item .row > div {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Show arrows on mobile */
+    .gallery-alt-carousel .carousel-control-prev,
+    .gallery-alt-carousel .carousel-control-next {
+        display: flex;
+
+        width: 40px;
+        height: 40px;
+
+        top: 50%;
+        transform: translateY(-50%);
+
+        z-index: 20;
+    }
+
+    .gallery-alt-carousel .carousel-control-prev {
+        left: 0;
+    }
+
+    .gallery-alt-carousel .carousel-control-next {
+        right: 0;
+    }
+
+    .gallery-alt-carousel .carousel-control-prev-icon,
+    .gallery-alt-carousel .carousel-control-next-icon {
+        width: 40px;
+        height: 40px;
+
+        padding: 0;
+
+        background-color: var(--primary);
+        border-radius: 50%;
+
+        background-size: 40%;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+}
+
 /* ================= CONTACT SECTION ================= */
 .contact-section {
   padding: 90px 20px;
@@ -1266,4 +1330,105 @@ img {
   .footer-grid > div:last-child {
     border-bottom: none;
   }
+}
+
+/* ==========================================
+   MOBILE LENS CAROUSEL
+   ========================================== */
+
+.mobile-lens-carousel {
+    display: none;
+}
+
+
+/* ==========================================
+   MOBILE ONLY
+   ========================================== */
+
+@media (max-width: 767.98px) {
+
+    /* Hide original desktop/tablet carousel */
+    #lensShowcase {
+        display: none;
+    }
+
+    /* Show mobile carousel */
+    .mobile-lens-carousel {
+        display: block;
+        position: relative;
+        width: 100%;
+        padding: 0 45px;
+    }
+
+    .mobile-lens-inner {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .mobile-lens-slide {
+        display: none;
+        width: 100%;
+    }
+
+    .mobile-lens-slide.active {
+        display: block;
+    }
+
+    .mobile-lens-slide .gallery-main {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+    }
+
+
+    /* ======================================
+       MOBILE ARROWS
+       ====================================== */
+
+    .mobile-lens-prev,
+    .mobile-lens-next {
+
+        position: absolute;
+
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 40px;
+        height: 40px;
+
+        border: none;
+        padding: 0;
+
+        border-radius: 50%;
+
+        background: var(--primary);
+
+        color: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 10;
+
+        cursor: pointer;
+
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    .mobile-lens-prev {
+        left: 0;
+    }
+
+    .mobile-lens-next {
+        right: 0;
+    }
+
+    .mobile-lens-prev span,
+    .mobile-lens-next span {
+        font-size: 32px;
+        line-height: 1;
+        font-weight: 300;
+        margin-top: -3px;
+    }
+
 }
