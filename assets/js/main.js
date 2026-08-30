@@ -1,42 +1,51 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   console.log('main.js loaded');
 
+  // ================= NAVBAR & MOBILE MENU =================
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
-
-  const alertBox = document.getElementById('formAlert');
-
-  function showToast(message, type = 'success') {
-    const toastEl = document.getElementById('formToast');
-    const toastMsg = document.getElementById('toastMessage');
-
-    toastEl.className = `toast align-items-center text-bg-${type} border-0`;
-    toastMsg.innerText = message;
-
-    const toast = new bootstrap.Toast(toastEl, {
-      delay: 5000
-    });
-
-    toast.show();
-  }
-
   const mobileLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
 
-  // Toggle menu
   if (hamburger && mobileMenu) {
     hamburger.addEventListener('click', () => {
       mobileMenu.classList.toggle('active');
     });
   }
 
-  // Close menu when any link is clicked
   mobileLinks.forEach(link => {
     link.addEventListener('click', () => {
       if (mobileMenu) mobileMenu.classList.remove('active');
     });
   });
 
+  // ================= HERO CAROUSEL =================
+  const slides = document.querySelectorAll('.hero-bg-carousel .slide');
+  if (slides.length > 0) {
+    let currentSlide = 0;
+    const slideInterval = 5000;
+
+    setInterval(() => {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, slideInterval);
+  }
+
+  // ================= TOAST HELPER =================
+  function showToast(message, type = 'success') {
+    const toastEl = document.getElementById('formToast');
+    const toastMsg = document.getElementById('toastMessage');
+
+    if (!toastEl || !toastMsg) return;
+
+    toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+    toastMsg.innerText = message;
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+    toast.show();
+  }
+
+  // ================= CONTACT FORM =================
   const formEl = document.querySelector('.contact-form');
   if (formEl) {
     formEl.addEventListener('submit', async (e) => {
@@ -57,19 +66,31 @@ document.addEventListener('DOMContentLoaded', () => {
         message: form[4].value.trim()
       };
 
+      // Fetch IP location with a 1.5-second timeout (non-blocking)
       try {
-        const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
 
-        Object.assign(data, {
-          city: geo.city,
-          region: geo.region,
-          country: geo.country,
-          latitude: geo.latitude,
-          longitude: geo.longitude
-        });
+        const geoRes = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+        clearTimeout(timeoutId);
 
-        console.log('Submitting contact payload:', data);
+        if (geoRes.ok) {
+          const geo = await geoRes.json();
+          Object.assign(data, {
+            city: geo.city || '',
+            region: geo.region || '',
+            country: geo.country_name || '',
+            latitude: geo.latitude || null,
+            longitude: geo.longitude || null
+          });
+        }
+      } catch (geoErr) {
+        console.warn('Geolocation lookup skipped or timed out:', geoErr.message);
+      }
 
+      console.log('Submitting contact payload:', data);
+
+      try {
         const res = await fetch('https://contact-api-jnqk.onrender.com/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -78,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('Response status:', res.status, res.statusText);
 
-        // Safely read response body (handle non-JSON responses)
         let resultBody;
         const contentType = res.headers.get('content-type') || '';
         if (contentType.includes('application/json')) {
@@ -87,10 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
           resultBody = await res.text();
         }
 
-        console.log('Response body:', resultBody);
-
         if (!res.ok) {
-          // Prefer server-provided message when available
           const serverMsg = resultBody && resultBody.message ? resultBody.message : resultBody;
           throw new Error(`Server ${res.status}: ${serverMsg || 'Unknown error'}`);
         }
@@ -107,9 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
-  } else {
-    console.log('No .contact-form on this page');
   }
-
 });
-
